@@ -1,0 +1,41 @@
+{
+  "imports": {
+    "@/": "./",
+    "react": "npm:react@19.1.0",
+    "react-dom": "npm:react-dom@19.1.0",
+    "next": "npm:next@15.4.4",
+    "@types/node": "npm:@types/node@^20",
+    "@types/react": "npm:@types/react@^19",
+    "@types/react-dom": "npm:@types/react-dom@^19",
+    "typescript": "npm:typescript@^5",
+    "@tailwindcss/postcss": "npm:@tailwindcss/postcss@^4",
+    "tailwindcss": "npm:tailwindcss@^4"
+  },
+  "tasks": {
+    "install": "deno install --allow-scripts",
+    "dev": "deno run -A --watch npm:next@15.4.4 dev",
+    "build": "deno run -A npm:next@15.4.4 build",
+    "start": "deno run -A npm:next@15.4.4 start",
+    "lint": "deno run -A npm:next@15.4.4 lint",
+    "type-check": "deno run -A npm:typescript@^5/tsc --noEmit"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "strict": true,
+    "jsxImportSource": "react"
+  },
+  "fmt": {
+    "include": ["app/", "*.ts", "*.tsx", "*.js", "*.jsx"],
+    "exclude": [".next/", "node_modules/"],
+    "options": {
+      "singleQuote": true
+    }
+  },
+  "nodeModulesDir": "auto",
+  "unstable": [
+    "node-globals"
+  ],
+  "lock": false
+} 

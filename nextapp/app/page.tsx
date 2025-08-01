@@ -1,103 +1,151 @@
-import Image from "next/image";
+'use client'
+
+import { useState } from 'react'
+import { useQuery } from '@apollo/client'
+import { UserForm } from '@/components/UserForm'
+import { UserCard } from '@/components/UserCard'
+import { RelationshipForm } from '@/components/RelationshipForm'
+import { RelationshipList } from '@/components/RelationshipList'
+import { GET_USERS } from '@/lib/graphql/queries/users'
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [activeTab, setActiveTab] = useState<'users' | 'relationships'>('users')
+  const [selectedUser, setSelectedUser] = useState<any>(null)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const { data: usersData, loading: usersLoading, error: usersError } = useQuery(GET_USERS)
+
+  const users = usersData?.users || []
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* ヘッダー */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <h1 className="text-3xl font-bold text-gray-900">
+            Neo4j × GraphQL × Next.js
+          </h1>
+          <p className="mt-2 text-gray-600">
+            ユーザー関係性管理アプリケーション
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </header>
+
+      {/* タブナビゲーション */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8">
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'users'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              ユーザー管理
+            </button>
+            <button
+              onClick={() => setActiveTab('relationships')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'relationships'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              関係性管理
+            </button>
+          </nav>
+        </div>
+
+        {/* コンテンツエリア */}
+        <div className="mt-6">
+          {activeTab === 'users' && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* ユーザー作成フォーム */}
+              <div>
+                <UserForm onSuccess={() => setSelectedUser(null)} />
+              </div>
+
+              {/* ユーザー一覧 */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  ユーザー一覧 ({users.length}人)
+                </h3>
+                
+                {usersLoading && (
+                  <div className="flex items-center justify-center p-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <span className="ml-2 text-gray-600">読み込み中...</span>
+                  </div>
+                )}
+
+                {usersError && (
+                  <div className="p-6 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-600">エラーが発生しました: {usersError.message}</p>
+                  </div>
+                )}
+
+                {!usersLoading && !usersError && users.length === 0 && (
+                  <div className="p-6 bg-gray-50 border border-gray-200 rounded-lg text-center">
+                    <p className="text-gray-600">まだユーザーが作成されていません。</p>
+                    <p className="text-sm text-gray-500 mt-1">左側のフォームから新しいユーザーを作成してください。</p>
+                  </div>
+                )}
+
+                {!usersLoading && !usersError && users.length > 0 && (
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {users.map((user: any) => (
+                      <UserCard
+                        key={user.id}
+                        user={user}
+                        onSelect={setSelectedUser}
+                        isSelected={selectedUser?.id === user.id}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* 選択されたユーザーの詳細 */}
+                {selectedUser && (
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 className="font-medium text-blue-900">選択中のユーザー</h4>
+                    <p className="text-sm text-blue-700">
+                      {selectedUser.name} ({selectedUser.email})
+                    </p>
+                    <p className="text-xs text-blue-600 mt-1">
+                      友達: {selectedUser.friendsCount}人
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'relationships' && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* 関係性作成フォーム */}
+              <div>
+                <RelationshipForm />
+              </div>
+
+              {/* 関係性一覧 */}
+              <div>
+                <RelationshipList />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* GraphQLエンドポイント情報 */}
+        <div className="mt-8 p-4 bg-gray-100 rounded-lg">
+          <h4 className="font-medium text-gray-900 mb-2">開発者向け情報</h4>
+          <div className="text-sm text-gray-600 space-y-1">
+            <p>GraphQLエンドポイント: <code className="bg-gray-200 px-1 rounded">/api/graphql</code></p>
+            <p>Apollo Studio: <a href="/api/graphql" target="_blank" className="text-blue-600 hover:underline">GraphQL Playgroundを開く</a></p>
+            <p>Neo4j Browser: <a href="http://localhost:7474" target="_blank" className="text-blue-600 hover:underline">Neo4j ブラウザを開く</a></p>
+          </div>
+        </div>
+      </div>
     </div>
-  );
+  )
 }

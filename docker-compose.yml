@@ -7,10 +7,10 @@ services:
       - "7477:7474"   # HTTP
       - "7688:7687"   # Bolt
     volumes:
-      - neo4j_data:/data
-      - neo4j_logs:/logs
-      - neo4j_import:/var/lib/neo4j/import
-      - neo4j_plugins:/plugins
+      - neo4j_graphql_data:/data
+      - neo4j_graphql_logs:/logs
+      - neo4j_graphql_import:/var/lib/neo4j/import
+      - neo4j_graphql_plugins:/plugins
     environment:
       # 認証設定
       NEO4J_AUTH: neo4j/password
